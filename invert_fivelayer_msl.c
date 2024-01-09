@@ -54,10 +54,14 @@ int main (void)
   t[4]=0.004; //m
 
   for(i=0;i<capm;i++){
-    mur[i]=50000;
+    mur[i]=20000;
+  }
+  mur[0]=50000;
+  mur[1]=50000;
+
+  for(i=0;i<capm;i++){
     printf("%d %f %f %f\n",i,capr1[i],t[i],mur[i]);
   }
-
   // Eq. (17)
   j=0;
   for(i=0;i<capm;i++){

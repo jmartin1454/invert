@@ -41,7 +41,7 @@ int main (void)
 
   //Define parameters of the problem
   
-  capr1[0]=2.26/2; // m
+  capr1[0]=2.28/2; // m
   capr1[1]=2.4/2; // m
   capr1[2]=2.6/2; // m
   capr1[3]=3.0/2; // m
@@ -55,9 +55,11 @@ int main (void)
 
   for(i=0;i<capm;i++){
     mur[i]=20000;
+  }
+
+  for(i=0;i<capm;i++){
     printf("%d %f %f %f\n",i,capr1[i],t[i],mur[i]);
   }
-  
   // Eq. (17)
   j=0;
   for(i=0;i<capm;i++){
