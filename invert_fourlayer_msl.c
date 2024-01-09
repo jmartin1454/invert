@@ -11,7 +11,7 @@ int main (void)
 {
   // Define the dimension n of the matrix
   // and the signum s (for LU decomposition)
-  int capm = 5; // number of shields.
+  int capm = 4; // number of shields.
   int rank = 2*capm; // matrix dimension
 
   int n=1; // multipole order
@@ -41,23 +41,21 @@ int main (void)
 
   //Define parameters of the problem
   
-  capr1[0]=2.26/2; // m
-  capr1[1]=2.4/2; // m
-  capr1[2]=2.6/2; // m
-  capr1[3]=3.0/2; // m
-  capr1[4]=3.5/2; // m
+  capr1[0]=2.4/2; // m
+  capr1[1]=2.6/2; // m
+  capr1[2]=3.0/2; // m
+  capr1[3]=3.5/2; // m
 
   t[0]=0.002; //m
-  t[1]=0.002; //m
+  t[1]=0.003; //m
   t[2]=0.003; //m
-  t[3]=0.003; //m
-  t[4]=0.004; //m
+  t[3]=0.004; //m
 
   for(i=0;i<capm;i++){
-    mur[i]=20000;
+    mur[i]=50000;
     printf("%d %f %f %f\n",i,capr1[i],t[i],mur[i]);
   }
-  
+
   // Eq. (17)
   j=0;
   for(i=0;i<capm;i++){
