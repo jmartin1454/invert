@@ -3,15 +3,11 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_cblas.h>
 
-
-// Calculates the shielding factor for capm concentric cylindrical shields.
-// See eq. (18) of https://arxiv.org/abs/1310.8242
-
 int main (void)
 {
   // Define the dimension n of the matrix
   // and the signum s (for LU decomposition)
-  int capm = 4; // number of shields.
+  int capm = 2; // number of shields.
   int rank = 2*capm; // matrix dimension
 
   int n=1; // multipole order
@@ -20,19 +16,19 @@ int main (void)
   int i,j; // indices of matrix
   int m; // index corresponding to which shield
   int s;
-  double element;
-  double sumrow;
-  double summat;
-  double sfact;
+  float element;
+  float sumrow;
+  float summat;
+  float sfact;
 
 
   // Define geometry
-  double r[rank];
-  double t[capm];
-  double capr1[capm];
+  float r[rank];
+  float t[capm];
+  float capr1[capm];
 
   // Define mu
-  double mur[capm];
+  float mur[capm];
 
   // Define all the used matrices
   gsl_matrix * a = gsl_matrix_alloc (rank, rank);
@@ -40,27 +36,23 @@ int main (void)
   gsl_permutation * perm = gsl_permutation_alloc (rank);
 
   //Define parameters of the problem
-  double k=0.2; // scale factor in Fig. 2
-  
-  capr1[0]=0.5; // R1 = 0.5 m
-  for(i=0;i<capm;i++){
-    capr1[i]=capr1[0]*pow((1+k),i);
-  }
+
+  capr1[0]=14;
+  capr1[1]=18;
 
   for(i=0;i<capm;i++){
-    t[i]=1./16.*0.0254; // 1/16th of an inch
-    mur[i]=20000;
+    t[i]=1./16.;
+    mur[i]=40000;
     printf("%d %f %f %f\n",i,capr1[i],t[i],mur[i]);
   }
 
-  // Eq. (17)
   j=0;
   for(i=0;i<capm;i++){
     r[j]=capr1[i];
-    printf("r%d %f\n",j,r[j]);
+    printf("%d %f\n",j,r[j]);
     j++;
     r[j]=capr1[i]+t[i];
-    printf("r%d %f\n",j,r[j]);
+    printf("%d %f\n",j,r[j]);
     j++;
   }
 

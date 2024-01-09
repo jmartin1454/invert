@@ -40,7 +40,7 @@ int main (void)
   gsl_permutation * perm = gsl_permutation_alloc (rank);
 
   //Define parameters of the problem
-  double k=0.2; // scale factor in Fig. 2
+  double k=0.025; // scale factor in Fig. 2
   
   capr1[0]=0.5; // R1 = 0.5 m
   for(i=0;i<capm;i++){
@@ -49,7 +49,7 @@ int main (void)
 
   for(i=0;i<capm;i++){
     t[i]=1./16.*0.0254; // 1/16th of an inch
-    mur[i]=20000;
+    mur[i]=40000;
     printf("%d %f %f %f\n",i,capr1[i],t[i],mur[i]);
   }
 
