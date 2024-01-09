@@ -1,0 +1,133 @@
+#include <math.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_cblas.h>
+
+int main (void)
+{
+  // Define the dimension n of the matrix
+  // and the signum s (for LU decomposition)
+  int capm = 2; // number of shields.
+  int rank = 2*capm; // matrix dimension
+
+  int n=1; // multipole order
+  // 1 = uniform field
+
+  int i,j; // indices of matrix
+  int m; // index corresponding to which shield
+  int s;
+  float element;
+  float sumrow;
+  float summat;
+  float sfact;
+
+
+  // Define geometry
+  float r[rank];
+  float t[capm];
+  float capr1[capm];
+
+  // Define mu
+  float mur[capm];
+
+  // Define all the used matrices
+  gsl_matrix * a = gsl_matrix_alloc (rank, rank);
+  gsl_matrix * inverse = gsl_matrix_alloc (rank, rank);
+  gsl_permutation * perm = gsl_permutation_alloc (rank);
+
+  //Define parameters of the problem
+
+  capr1[0]=14;
+  capr1[1]=18;
+
+  for(i=0;i<capm;i++){
+    t[i]=1./16.;
+    mur[i]=40000;
+    printf("%d %f %f %f\n",i,capr1[i],t[i],mur[i]);
+  }
+
+  j=0;
+  for(i=0;i<capm;i++){
+    r[j]=capr1[i];
+    printf("%d %f\n",j,r[j]);
+    j++;
+    r[j]=capr1[i]+t[i];
+    printf("%d %f\n",j,r[j]);
+    j++;
+  }
+
+  printf("Fill the Matrix\n");
+  
+  // Fill the matrix m
+  for (i = 0; i < rank; i++){
+    for (j = 0; j < rank; j++) {
+      if(j<i)element=pow(r[j]/r[i],2*n);
+      else if(j>i)element=-1;
+      else if(j==i) {
+	// Note:  complicated by C starting at 0 index
+	if((i+1)%2==1){
+	  m=((i+1)+1)/2-1;
+	  element=-(mur[m]+1)/(mur[m]-1);
+	} else {
+	  m=(i+1)/2-1;
+	  element=(mur[m]+1)/(mur[m]-1);
+	}
+	//	printf("Check %d %d %d\n",i,j,m);
+      }
+      gsl_matrix_set (a, i, j, element);
+      printf("%f ",element);
+    }
+    printf("\n");
+  }
+
+  printf("Print the matrix\n");
+  // print the matrix
+  for (i = 0; i < rank; i++){
+    for (j = 0; j < rank; j++) {
+      element=gsl_matrix_get (a, i, j);
+      printf("%f ",element);
+    }
+    printf("\n");
+  }
+
+
+
+  printf("Inverse\n");
+  
+  // Make LU decomposition of matrix m
+  gsl_linalg_LU_decomp (a, perm, &s);
+  
+  // Invert the matrix m
+  gsl_linalg_LU_invert (a, perm, inverse);
+
+  for (i = 0; i < rank; i++){
+    for (j = 0; j < rank; j++) {
+      element=gsl_matrix_get (inverse, i, j);
+      printf("%f ",element);
+    }
+    printf("\n");
+  }
+
+  // Act on vector of 1's
+  // i.e., add up along a row.
+  // then we add up all the rows anyway.
+  // just sum the whole matrix, then.
+  summat=0;
+  for (i = 0; i < rank; i++){
+    sumrow=0;
+    for (j = 0; j < rank; j++) {
+      element=gsl_matrix_get (inverse, i, j);
+      sumrow=sumrow+element;
+    }
+    printf("%d sumrow %f\n",i,sumrow);
+    summat=summat+sumrow;
+  }
+  printf("summat %f\n",summat);
+
+  sfact=1./(1.+summat);
+
+  printf("sfact %f\n",sfact);
+
+
+}
+
